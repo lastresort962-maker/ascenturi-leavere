@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leave Request</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#f3f6f8;--card:#fff;--ink:#14283d;--mute:#617184;--line:#dce5eb;--accent:#087e83;--accent-dark:#06676d;--accent-pale:#e7f5f4;--navy:#102a43;--gold:#e9a83b;--bad:#b3261e;--ok:#1b6e3c;--shadow:0 18px 48px rgba(16,42,67,.09);--header-bg:rgba(255,255,255,.92);--field-bg:#fbfcfd;--choice-bg:#fff;--policy-bg:#fff;--summary-bg:#f7f9fa;--pending-fg:#805b00;--pending-bg:#fff7df;--pending-line:#efd27d;--approved-fg:#176338;--approved-bg:#eaf7ed;--approved-line:#a9d5b4;--rejected-fg:#9d211b;--rejected-bg:#fff0ee;--rejected-line:#e8b4af;--canceled-fg:#4b5563;--canceled-bg:#f0f2f4;--canceled-line:#c7cdd3}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#101923;--card:#192532;--ink:#e8eef4;--mute:#a0b0bf;--line:#344454;--accent:#55c5c3;--accent-dark:#39aaa9;--accent-pale:#203b43;--navy:#e2edf4;--shadow:0 18px 48px rgba(0,0,0,.28);--header-bg:rgba(20,32,44,.96);--field-bg:#121e29;--choice-bg:#1c2a38;--policy-bg:#192733;--summary-bg:#14212c;--pending-fg:#ffdf87;--pending-bg:#3a321d;--pending-line:#75602c;--approved-fg:#9be2b0;--approved-bg:#193625;--approved-line:#39734c;--rejected-fg:#ffaaa4;--rejected-bg:#3b2222;--rejected-line:#844744;--canceled-fg:#ccd5de;--canceled-bg:#28333e;--canceled-line:#4a5865}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#e1f0f1 0,transparent 34rem),var(--bg);color:var(--ink);font:16px/1.55 "DM Sans",system-ui,sans-serif;transition:background-color .2s,color .2s}
+:root[data-theme="dark"] body{background:radial-gradient(ellipse at 10% 0%,#1b3841 0,transparent 34rem),var(--bg)}
+button,input,textarea{font:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(8,126,131,.4);outline-offset:2px}
+.site-header{background:var(--header-bg);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.header-inner{max-width:1000px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:15px}
+.brand-logo{width:62px;height:62px;object-fit:contain;border-radius:12px;background:#fff}
+.brand-name{font:800 17px/1.25 "Manrope",sans-serif;letter-spacing:-.3px;color:var(--navy)}
+.brand-caption{margin-top:3px;color:var(--mute);font-size:12px;letter-spacing:.7px;text-transform:uppercase}
+.eastern-clock{margin-left:auto;text-align:right}
+.eastern-clock-label{color:var(--mute);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.eastern-clock time{display:block;color:var(--ink);font-variant-numeric:tabular-nums;font-size:14px;font-weight:700}
+.theme-toggle{margin-left:0;display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-size:13px;font-weight:700;cursor:pointer}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-icon{width:18px;height:18px;display:grid;place-items:center;color:var(--accent)}
+.theme-icon svg{width:18px;height:18px}
+main{max-width:920px;margin:0 auto;padding:48px 24px 72px}
+.hero{position:relative;overflow:hidden;margin-bottom:26px;padding:34px 38px;border-radius:20px;background:linear-gradient(120deg,#102a43 0%,#17465a 68%,#087e83 100%);color:#fff;box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;width:250px;height:250px;right:-65px;top:-110px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 26px rgba(255,255,255,.035),0 0 0 54px rgba(255,255,255,.025)}
+.eyebrow{margin:0 0 10px;color:#a9e1dd;font-size:12px;font-weight:700;letter-spacing:1.7px;text-transform:uppercase}
+h1,h2{font-family:"Manrope","DM Sans",sans-serif}
+h1{position:relative;z-index:1;margin:0;font-size:clamp(30px,5vw,42px);line-height:1.12;letter-spacing:-1.4px}
+.hero-copy{position:relative;z-index:1;max-width:560px;margin:12px 0 0;color:#dbe8ed;font-size:16px}
+.choice,.status-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 8px 28px rgba(16,42,67,.045)}
+.choice{display:grid;gap:20px}
+.section-heading{margin:0;font-size:21px;letter-spacing:-.45px}
+.choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.action-card{min-height:154px;padding:21px 22px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:8px;background:var(--choice-bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.action-card:hover{transform:translateY(-2px);border-color:#83c9c7;box-shadow:0 10px 24px rgba(16,42,67,.08)}
+.action-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--accent-pale);color:var(--accent)}
+.action-icon svg{width:20px;height:20px}
+.action-title{font:700 16px "Manrope",sans-serif}
+.action-copy{color:var(--mute);font-size:13px}
+.action-arrow{margin-left:auto;margin-top:-25px;color:var(--accent);font-size:20px}
+[hidden]{display:none!important}
+.backButton{display:inline-flex;align-items:center;gap:4px;margin:0 0 18px!important;padding:6px 0!important;appearance:none;background:transparent!important;color:var(--accent-dark)!important;border:0;border-radius:6px;font-size:14px!important;font-weight:700;line-height:1.5;cursor:pointer}
+.backButton:hover{color:var(--accent)!important}
+.policy{margin-bottom:20px;padding:20px 22px;background:var(--policy-bg);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:13px}
+.policy h2{margin:0 0 8px;font-size:16px}
+.policy ul{margin:0;padding-left:20px;color:var(--mute);font-size:14px}
+.policy li+li{margin-top:5px}
+.status-card{display:grid;gap:15px}
+.status-card h2{margin:0;font-size:22px;letter-spacing:-.5px}
+.sub{margin:0;color:var(--mute)}
+form{padding:26px;background:var(--card);border:1px solid var(--line);border-radius:16px;display:grid;gap:18px;box-shadow:0 8px 28px rgba(16,42,67,.045)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.date-field{display:grid;gap:7px}
+label{display:grid;gap:7px;color:var(--ink);font-size:13px;font-weight:700}
+input,textarea{width:100%;padding:12px 14px;color:var(--ink);background:var(--field-bg);border:1px solid var(--line);border-radius:9px;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,126,131,.1);outline:none}
+input[type="checkbox"]{width:auto;accent-color:var(--accent)}
+textarea{min-height:110px;resize:vertical}
+.date-picker-wrap{position:relative}
+.date-input{cursor:pointer}
+.calendar{position:absolute;z-index:5;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 48px));padding:15px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 38px rgba(16,42,67,.18)}
+.calendar[hidden]{display:none}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.calendar-month{font:700 15px "Manrope",sans-serif;color:var(--ink)}
+.calendar-nav{width:34px;height:34px;padding:0;display:grid;place-items:center;background:var(--summary-bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.calendar-nav:hover{border-color:var(--accent);color:var(--accent)}
+.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;text-align:center}
+.calendar-weekdays{margin-bottom:6px;color:var(--mute);font-size:11px;font-weight:700}
+.calendar-weekdays span{padding:4px 0}
+.calendar-day,.calendar-empty{min-width:0;aspect-ratio:1}
+.calendar-day{padding:0;background:transparent;color:var(--ink);border:1px solid transparent;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer}
+.calendar-day.available{background:#e4f5e9;color:#176338;border-color:#b3ddbf}
+.calendar-day.available:hover{background:#c9ebd2;border-color:#78c58d}
+.calendar-day.unavailable{color:var(--mute);opacity:.38;cursor:not-allowed}
+.calendar-day.selected{background:#168044;color:#fff;border-color:#168044;box-shadow:0 0 0 2px rgba(22,128,68,.18)}
+.calendar-day.today:not(.selected){box-shadow:inset 0 0 0 1px var(--accent)}
+.calendar-legend{display:flex;align-items:center;gap:7px;margin-top:12px;color:var(--mute);font-size:11px;font-weight:500}
+.calendar-legend-swatch{width:12px;height:12px;border-radius:4px;background:#e4f5e9;border:1px solid #b3ddbf}
+:root[data-theme="dark"] .calendar-day.available{background:#1d402b;color:#a8e4b7;border-color:#39734c}
+:root[data-theme="dark"] .calendar-day.available:hover{background:#285638}
+:root[data-theme="dark"] .calendar-day.selected{background:#267d49;color:#fff;border-color:#54a66c}
+:root[data-theme="dark"] .calendar-legend-swatch{background:#1d402b;border-color:#39734c}
+#summary{padding:13px 15px;border-radius:10px;border:1px solid var(--line);background:var(--summary-bg);color:var(--mute);font-size:14px}
+#summary.bad{color:var(--bad);background:var(--rejected-bg);border-color:var(--rejected-line)}
+#summary.ok{color:var(--ok);background:var(--approved-bg);border-color:var(--approved-line)}
+.status-result{padding:14px 16px;border:1px solid var(--line);border-radius:10px;font-weight:700}
+.status-result.pending{color:var(--pending-fg);background:var(--pending-bg);border-color:var(--pending-line)}
+.status-result.approved{color:var(--approved-fg);background:var(--approved-bg);border-color:var(--approved-line)}
+.status-result.rejected{color:var(--rejected-fg);background:var(--rejected-bg);border-color:var(--rejected-line)}
+.status-result.canceled{color:var(--canceled-fg);background:var(--canceled-bg);border-color:var(--canceled-line)}
+.status-result.unknown{color:var(--mute);background:var(--summary-bg)}
+.status-result.error{color:var(--bad);border-color:var(--rejected-line);background:var(--rejected-bg)}
+.form-button,button[type="submit"],.primary-button{width:100%;padding:14px 18px;background:var(--accent);color:#fff;border:0;border-radius:10px;font-weight:700;cursor:pointer;transition:background .15s,transform .15s}
+.form-button:hover,button[type="submit"]:hover,.primary-button:hover{background:var(--accent-dark)}
+button:disabled{opacity:.55;cursor:not-allowed}
+#result{margin-top:2px;font-weight:600}
+.hp{position:absolute;left:-9999px}
+.status-card form{margin-top:0}
+@media (max-width:600px){.header-inner{padding:12px 18px;flex-wrap:wrap;gap:10px 15px}.brand-logo{width:52px;height:52px}.eastern-clock{order:1;flex:1 0 100%;margin-left:0;text-align:right}.eastern-clock time{font-size:13px}.theme-toggle{margin-left:auto;padding:9px 11px}.theme-label{display:none}main{padding:28px 16px 48px}.hero{padding:28px 24px;border-radius:16px}.choice,.status-card{padding:21px}.choice-actions,.row{grid-template-columns:1fr}.action-card{min-height:132px}form{padding:20px}.policy{padding:17px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <img class="brand-logo" src="sales_match_llc_logo.jpe" alt="Sales Match LLC logo">
+    <div>
+      <div class="brand-name">Ascenturi</div>
+      <div class="brand-caption">Employee leave services</div>
+    </div>
+    <div class="eastern-clock">
+      <div class="eastern-clock-label">Current Eastern time</div>
+      <time id="easternTime"></time>
+    </div>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+      <span class="theme-icon" aria-hidden="true">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </span>
+      <span id="themeLabel" class="theme-label">Dark mode</span>
+    </button>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">Leave management</p>
+    <h1>Time away, made simple.</h1>
+    <p class="hero-copy">Submit a leave request or check on a request you’ve already filed.</p>
+  </section>
+
+  <section id="homeView" class="choice" aria-labelledby="choice-heading">
+    <h2 id="choice-heading" class="section-heading">How can we help?</h2>
+    <div class="choice-actions">
+      <button type="button" id="showFile" class="action-card">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.75h7l4.25 4.3v11.2A1.75 1.75 0 0 1 16.5 21h-9A1.75 1.75 0 0 1 5.75 19.25v-13.75A1.75 1.75 0 0 1 7.5 3.75Z"/><path d="M14 4v5h5M12 12v6m-3-3h6"/></svg>
+        </span>
+        <span class="action-title">File a leave request</span>
+        <span class="action-copy">Share your dates and submit a new request.</span>
+        <span class="action-arrow" aria-hidden="true">→</span>
+      </button>
+      <button type="button" id="showStatus" class="action-card">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.25"/><path d="m16.5 16.5 4 4M11 7v4l2.5 1.5"/></svg>
+        </span>
+        <span class="action-title">Check leave status</span>
+        <span class="action-copy">Look up the latest status with your case ID.</span>
+        <span class="action-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="fileView" hidden>
+    <button type="button" class="backButton">← &nbsp;Back to options</button>
+    <section class="policy">
+      <h2>Leave policy notice</h2>
+      <ul>
+        <li><b>Standard leave:</b> maximum of 2 days per month per employee. Request and file at least 1 week prior.</li>
+        <li><b>Extended trips (more than 2 days):</b> request at least 1 month prior.</li>
+      </ul>
+    </section>
+
+    <form id="f" novalidate>
+      <div class="row">
+        <label>First name <input name="firstName" required autocomplete="given-name"></label>
+        <label>Last name <input name="lastName" required autocomplete="family-name"></label>
+      </div>
+      <label>Email address <input name="email" type="email" required autocomplete="email"></label>
+      <div class="row">
+        <div class="date-field">
+          <label for="start">First day of leave</label>
+          <span class="date-picker-wrap">
+            <input name="start" id="start" class="date-input" type="text" required readonly placeholder="Choose a date" aria-haspopup="dialog" aria-expanded="false" aria-controls="startCalendar">
+            <span class="calendar" id="startCalendar" role="dialog" aria-label="Choose first day of leave" hidden>
+              <span class="calendar-toolbar">
+                <button type="button" class="calendar-nav" data-calendar-nav="-1" aria-label="Previous month">‹</button>
+                <span class="calendar-month"></span>
+                <button type="button" class="calendar-nav" data-calendar-nav="1" aria-label="Next month">›</button>
+              </span>
+              <span class="calendar-weekdays" aria-hidden="true"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></span>
+              <span class="calendar-days" role="grid"></span>
+              <span class="calendar-legend"><span class="calendar-legend-swatch"></span> Available dates</span>
+            </span>
+          </span>
+        </div>
+        <div class="date-field">
+          <label for="end">Last day of leave</label>
+          <span class="date-picker-wrap">
+            <input name="end" id="end" class="date-input" type="text" required readonly placeholder="Choose a date" aria-haspopup="dialog" aria-expanded="false" aria-controls="endCalendar">
+            <span class="calendar" id="endCalendar" role="dialog" aria-label="Choose last day of leave" hidden>
+              <span class="calendar-toolbar">
+                <button type="button" class="calendar-nav" data-calendar-nav="-1" aria-label="Previous month">‹</button>
+                <span class="calendar-month"></span>
+                <button type="button" class="calendar-nav" data-calendar-nav="1" aria-label="Next month">›</button>
+              </span>
+              <span class="calendar-weekdays" aria-hidden="true"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></span>
+              <span class="calendar-days" role="grid"></span>
+              <span class="calendar-legend"><span class="calendar-legend-swatch"></span> Available dates</span>
+            </span>
+          </span>
+        </div>
+      </div>
+      <p class="calendar-legend"><span class="calendar-legend-swatch"></span> Leave must be filed at least 7 days ahead. Requests longer than 2 days require at least 30 days' notice.</p>
+      <div id="summary" aria-live="polite">Pick your dates to see which rule applies.</div>
+      <label>Reason <textarea name="reason" required></textarea></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button id="btn" type="submit">Submit request</button>
+      <div id="result" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section id="statusView" class="status-card" aria-labelledby="status-heading" hidden>
+    <button type="button" class="backButton">← &nbsp;Back to options</button>
+    <h2 id="status-heading">Check leave request status</h2>
+    <p class="sub">Enter the case ID you received when you submitted your request.</p>
+    <form id="statusForm" novalidate>
+      <label>Case ID <input id="caseId" name="caseId" required autocomplete="off" inputmode="numeric" placeholder="Enter your 8-digit case ID" spellcheck="false"></label>
+      <label><span><input id="autoCheck" type="checkbox"> Automatically refresh every 30 seconds while this page is open</span></label>
+      <button id="statusBtn" type="submit">Check status</button>
+      <div id="statusResult" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<script>
+document.addEventListener("contextmenu", event => event.preventDefault());
+
+// 1) Paste your Apps Script Web App URL here (see setup steps).
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbw3syJfxKTRWrSZQTWzGQAEnG4m4lZsMptzZK3GR2GKVqbw3hRJt1RHHYFZLjijtX9o7A/exec";
+
+const $ = id => document.getElementById(id);
+const DAY = 864e5;
+const STATUS_REFRESH_MS = 30000;
+const THEME_STORAGE_KEY = "leave-tracker-theme";
+const toDate = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const formatDate = date => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+const dateValue = id => $(id).dataset.date || "";
+const easternTimeFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+  timeZoneName: "short"
+});
+let statusTimer = null;
+let statusLookupRunning = false;
+let activeCalendar = null;
+const calendarMonths = {};
+
+function updateEasternClock() {
+  const now = new Date();
+  const clock = $("easternTime");
+  clock.dateTime = now.toISOString();
+  clock.textContent = easternTimeFormatter.format(now);
+}
+
+updateEasternClock();
+setInterval(updateEasternClock, 1000);
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  $("themeLabel").textContent = isDark ? "Light mode" : "Dark mode";
+  $("themeToggle").setAttribute("aria-label", `Switch to ${isDark ? "light" : "dark"} mode`);
+  $("themeToggle").setAttribute("aria-pressed", String(isDark));
+  $("themeIcon").innerHTML = isDark
+    ? '<path d="M20.2 15.5A8.5 8.5 0 0 1 8.5 3.8 8.7 8.7 0 1 0 20.2 15.5Z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>';
+}
+
+let initialTheme = "light";
+try {
+  initialTheme = localStorage.getItem(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+} catch (err) {
+  initialTheme = "light";
+}
+applyTheme(initialTheme);
+
+function showView(id) {
+  ["homeView", "fileView", "statusView"].forEach(viewId => {
+    $(viewId).hidden = viewId !== id;
+  });
+}
+
+function showStatus(status, prefix) {
+  const out = $("statusResult");
+  const value = String(status || "").trim();
+  const normalized = value.toLowerCase();
+  let state = "unknown";
+  if (normalized.includes("pending")) state = "pending";
+  else if (normalized.includes("approv")) state = "approved";
+  else if (normalized.includes("reject") || normalized.includes("denied")) state = "rejected";
+  else if (normalized.includes("cancel")) state = "canceled";
+  out.className = `status-result ${state}`;
+  out.textContent = `${prefix || "Current status:"} ${value || "Unknown"}.`;
+}
+
+function showStatusError(message) {
+  const out = $("statusResult");
+  out.className = "status-result error";
+  out.textContent = message;
+}
+
+function showStatusLoading() {
+  const out = $("statusResult");
+  out.className = "status-result unknown";
+  out.textContent = "Checking status…";
+}
+
+function scheduleStatusRefresh() {
+  clearInterval(statusTimer);
+  statusTimer = null;
+  if ($("autoCheck").checked && $("caseId").value.trim()) {
+    statusTimer = setInterval(() => lookupStatus(true), STATUS_REFRESH_MS);
+  }
+}
+
+async function lookupStatus(isAutomatic) {
+  const caseId = $("caseId").value.trim();
+  const out = $("statusResult");
+  if (!caseId || statusLookupRunning) return;
+
+  statusLookupRunning = true;
+  if (!isAutomatic) {
+    $("statusBtn").disabled = true;
+    showStatusLoading();
+  }
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "status", caseId })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      showStatusError(data.message || "Couldn't find that request. Check the case ID and try again.");
+      return;
+    }
+    showStatus(data.status);
+  } catch (err) {
+    showStatusError("Couldn't check the status. Please try again.");
+  } finally {
+    statusLookupRunning = false;
+    $("statusBtn").disabled = false;
+  }
+}
+
+function updateDateLimits() {
+  renderCalendar("start");
+  renderCalendar("end");
+}
+
+function minimumDate(id) {
+  const min = new Date();
+  min.setHours(0,0,0,0);
+  min.setDate(min.getDate() + 7);
+  if (id === "end" && dateValue("start")) {
+    const selectedStart = toDate(dateValue("start"));
+    if (selectedStart > min) return selectedStart;
+  }
+  return min;
+}
+
+function maximumDate(id) {
+  if (id !== "end" || !dateValue("start")) return null;
+  const start = toDate(dateValue("start"));
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const notice = Math.round((start - today) / DAY);
+  if (notice >= 30) return null;
+  const max = new Date(start);
+  max.setDate(max.getDate() + 1);
+  return max;
+}
+
+function renderCalendar(id) {
+  const calendar = $(id + "Calendar");
+  if (!calendar) return;
+  const minimum = minimumDate(id);
+  const maximum = maximumDate(id);
+  const month = calendarMonths[id] || new Date(minimum.getFullYear(), minimum.getMonth(), 1);
+  calendarMonths[id] = month;
+  calendar.querySelector(".calendar-month").textContent =
+    new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(month);
+
+  const daysGrid = calendar.querySelector(".calendar-days");
+  daysGrid.replaceChildren();
+  const firstDay = new Date(month.getFullYear(), month.getMonth(), 1).getDay();
+  const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+  for (let blank = 0; blank < firstDay; blank++) {
+    const empty = document.createElement("span");
+    empty.className = "calendar-empty";
+    empty.setAttribute("aria-hidden", "true");
+    daysGrid.appendChild(empty);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(month.getFullYear(), month.getMonth(), day);
+    const value = formatDate(date);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "calendar-day";
+    button.textContent = String(day);
+    button.dataset.date = value;
+    button.setAttribute("aria-label", new Intl.DateTimeFormat(undefined, {
+      weekday: "long", month: "long", day: "numeric", year: "numeric"
+    }).format(date));
+    if (date < minimum || (maximum && date > maximum)) {
+      button.disabled = true;
+      button.classList.add("unavailable");
+    } else {
+      button.classList.add("available");
+    }
+    if (value === dateValue(id)) {
+      button.classList.add("selected");
+      button.setAttribute("aria-pressed", "true");
+    }
+    const today = new Date();
+    if (value === formatDate(today)) button.classList.add("today");
+    daysGrid.appendChild(button);
+  }
+}
+
+function openCalendar(id) {
+  if (activeCalendar && activeCalendar !== id) {
+    $(activeCalendar + "Calendar").hidden = true;
+    $(activeCalendar).setAttribute("aria-expanded", "false");
+  }
+  activeCalendar = id;
+  if (!calendarMonths[id]) {
+    const selected = dateValue(id) ? toDate(dateValue(id)) : minimumDate(id);
+    calendarMonths[id] = new Date(selected.getFullYear(), selected.getMonth(), 1);
+  }
+  renderCalendar(id);
+  $(id + "Calendar").hidden = false;
+  $(id).setAttribute("aria-expanded", "true");
+}
+
+function closeCalendar() {
+  if (!activeCalendar) return;
+  $(activeCalendar + "Calendar").hidden = true;
+  $(activeCalendar).setAttribute("aria-expanded", "false");
+  activeCalendar = null;
+}
+
+function check() {
+  const s = dateValue("start"), e = dateValue("end");
+  if (!s || !e) return { ok:false, msg:null };
+  const start = toDate(s), end = toDate(e);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((end - start) / DAY) + 1;
+  const notice = Math.round((start - today) / DAY);
+  if (days < 1) return { ok:false, msg:"The last day can't be before the first day." };
+  if (days > 2) {
+    if (notice < 30) return { ok:false, msg:`Extended trip (${days} days). It must be filed at least 1 month ahead; you're ${Math.max(notice,0)} days out.` };
+    return { ok:true, msg:`Extended trip: ${days} days, filed ${notice} days ahead.` };
+  }
+  if (notice < 7) return { ok:false, msg:`Standard leave must be filed at least 1 week ahead; you're ${Math.max(notice,0)} days out.` };
+  return { ok:true, msg:`Standard leave: ${days} day${days>1?"s":""}, filed ${notice} days ahead.` };
+}
+
+function refresh() {
+  updateDateLimits();
+  const r = check(), box = $("summary");
+  box.className = r.msg ? (r.ok ? "ok" : "bad") : "";
+  box.textContent = r.msg || "Pick your dates to see which rule applies.";
+}
+["start","end"].forEach(id => {
+  $(id).addEventListener("focus", () => openCalendar(id));
+  $(id).addEventListener("click", () => openCalendar(id));
+});
+document.querySelectorAll(".calendar").forEach(calendar => {
+  calendar.addEventListener("click", event => {
+    const navigation = event.target.closest("[data-calendar-nav]");
+    if (navigation) {
+      const id = calendar.id.replace("Calendar", "");
+      const month = calendarMonths[id] || new Date();
+      month.setMonth(month.getMonth() + Number(navigation.dataset.calendarNav));
+      calendarMonths[id] = month;
+      renderCalendar(id);
+      return;
+    }
+
+    const dayButton = event.target.closest(".calendar-day.available");
+    if (!dayButton || dayButton.disabled) return;
+    const id = calendar.id.replace("Calendar", "");
+    const selectedDate = toDate(dayButton.dataset.date);
+    $(id).dataset.date = dayButton.dataset.date;
+    $(id).value = new Intl.DateTimeFormat(undefined, {
+      year: "numeric", month: "long", day: "numeric"
+    }).format(selectedDate);
+    if (id === "start" && dateValue("end") && dateValue("end") < dateValue("start")) {
+      $("end").dataset.date = "";
+      $("end").value = "";
+    }
+    if (id === "start" && dateValue("end")) {
+      const maximumEnd = maximumDate("end");
+      if (maximumEnd && toDate(dateValue("end")) > maximumEnd) {
+        $("end").dataset.date = "";
+        $("end").value = "";
+      }
+    }
+    closeCalendar();
+    refresh();
+  });
+});
+document.addEventListener("click", event => {
+  if (activeCalendar && !event.target.closest(".date-picker-wrap")) closeCalendar();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeCalendar();
+});
+refresh();
+
+$("themeToggle").addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(nextTheme);
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  } catch (err) {
+    // Theme switching still works for this page view if storage is unavailable.
+  }
+});
+
+$("showFile").addEventListener("click", () => showView("fileView"));
+$("showStatus").addEventListener("click", () => showView("statusView"));
+document.querySelectorAll(".backButton").forEach(button => {
+  button.addEventListener("click", () => showView("homeView"));
+});
+
+$("f").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const f = ev.target, out = $("result");
+  if (!f.reportValidity()) return;
+  const r = check();
+  if (!r.ok) { refresh(); out.style.color = "var(--bad)"; out.textContent = r.msg || "Check your dates."; return; }
+  if (f.website.value) return; // honeypot
+  if (ENDPOINT.startsWith("PASTE")) { out.style.color = "var(--bad)"; out.textContent = "Setup incomplete: add the Web App URL in index.html."; return; }
+
+  const btn = $("btn"); btn.disabled = true; out.style.color = "var(--mute)"; out.textContent = "Sending…";
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids CORS preflight
+      body: JSON.stringify({
+        name: `${f.firstName.value.trim()} ${f.lastName.value.trim()}`,
+        firstName: f.firstName.value.trim(), lastName: f.lastName.value.trim(),
+        email: f.email.value.trim(),
+        start: dateValue("start"), end: dateValue("end"), reason: f.reason.value.trim()
+      })
+    });
+    const data = await res.json();
+    if (data.ok && data.caseId) {
+      out.style.color = "var(--ok)";
+      const emailMessage = data.emailSent
+        ? " A confirmation email was sent."
+        : " Email delivery failed, so please save your case ID.";
+      out.textContent = `${data.message} Your case ID is ${data.caseId}. Save it to check your status later.${emailMessage}`;
+      $("caseId").value = data.caseId;
+      showStatus(data.status || "Pending");
+      scheduleStatusRefresh();
+      f.reset();
+      $("start").dataset.date = "";
+      $("end").dataset.date = "";
+      refresh();
+    }
+    else if (data.ok) {
+      out.style.color = "var(--bad)";
+      out.textContent = "Request submitted, but no case ID was returned. Update and redeploy the Apps Script to enable status tracking.";
+    }
+    else { out.style.color = "var(--bad)"; out.textContent = data.message; }
+  } catch (err) {
+    out.style.color = "var(--bad)"; out.textContent = "Couldn't reach the Leave Tracker. Try again in a moment.";
+  } finally { btn.disabled = false; }
+});
+
+$("statusForm").addEventListener("submit", ev => {
+  ev.preventDefault();
+  if (!$("caseId").value.trim()) {
+    showStatusError("Enter your case ID to check the request.");
+    return;
+  }
+  lookupStatus(false);
+  scheduleStatusRefresh();
+});
+
+$("caseId").addEventListener("input", () => {
+  clearInterval(statusTimer);
+  statusTimer = null;
+});
+$("autoCheck").addEventListener("change", () => {
+  if ($("autoCheck").checked) {
+    lookupStatus(false);
+    scheduleStatusRefresh();
+  } else {
+    clearInterval(statusTimer);
+    statusTimer = null;
+  }
+});
+</script>
+</body>
+</html>
